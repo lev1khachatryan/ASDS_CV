@@ -7,11 +7,10 @@ from skimage.io import imsave
 
 sys.path.insert(0, '/'.join(__file__.split('/')[:-3]))
 from dataloaders.segmentation_loader import seg_data, seg_data_test
-from utils import decoder
+from utils import *
 from base_model import BaseModel
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 class SegModel(BaseModel):
     def __init__(self, args, sess):
@@ -54,7 +53,7 @@ class SegModel(BaseModel):
                                                     shuffle=True)
 
             self.dataloader_val = data.DataLoader(
-                                                    seg_data(root=os.path.join(self.dataset_path, 'test'),
+                                                    seg_data(root=os.path.join(self.dataset_path, 'val'),
                                                                                image_height=self.image_height,
                                                                                image_width=self.image_width),
                                                     batch_size=self.batch_size,
@@ -102,13 +101,14 @@ class SegModel(BaseModel):
                                                                                 var_list=var_list_to_update)
         return [train_op] + self.updates
 
-    def get_losses(self, ground_truths, predictions):
+    def get_losses(self):
         # TODO implement the totall loss as the weighted sum of two losses, namely cross entropy loss and MSE
-        loss = 0
-        mse = 0
+
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = self.softmax, labels = self.placeholders_dict['masks']))
+        mse = tf.reduce_mean(tf.squared_difference(self.placeholders_dict['masks'], self.softmax))
 
         # TODO tune the hyperparameters lambda_1 and lambda_2
-        lambda_1 = lambda_2 = 1
+        lambda_1 = lambda_2 = 0.5
 
         totall_loss = lambda_1 * loss + lambda_2 * mse
         losses_dict = {'cross_entropy': loss, 'totall_loss': totall_loss, 'mse': mse}
@@ -122,9 +122,76 @@ class SegModel(BaseModel):
     def network(self, input_dict, mode, num_classes):
         # TODO build an architecture
 
-        out = None # TODO the last layer with 'num_classes' channels
+        #-----------------------------Build network encoder-----------------------------
+        with tf.name_scope('ensoder'):
+            self.conv1_1 = conv_layer_with_ReLU(inputs=input_dict['images'], f_size=64, k_size=3, stride=1, name="1_1")
+            self.conv1_2 = conv_layer_with_ReLU(inputs=self.conv1_1, f_size=64, k_size=3, stride=1, name="1_2")
+            self.pool1 = max_pool_2x2(self.conv1_2, k_size=2, stride=2, name='1')
+
+            self.conv2_1 = conv_layer_with_ReLU(inputs=self.pool1, f_size=128, k_size=3, stride=1, name="2_1")
+            self.conv2_2 = conv_layer_with_ReLU(inputs=self.conv2_1, f_size=128, k_size=3, stride=1, name="2_2")
+            self.pool2 = max_pool_2x2(self.conv2_2, k_size=2, stride=2, name='2')
+
+            self.conv3_1 = conv_layer_with_ReLU(inputs=self.pool2, f_size=256, k_size=3, stride=1, name="3_1")
+            self.conv3_2 = conv_layer_with_ReLU(inputs=self.conv3_1, f_size=256, k_size=3, stride=1, name="3_2")
+            self.conv3_3 = conv_layer_with_ReLU(inputs=self.conv3_2, f_size=256, k_size=3, stride=1, name="3_3")
+            self.pool3 = max_pool_2x2(self.conv3_3, k_size=2, stride=2, name='3')
+
+            self.conv4_1 = conv_layer_with_ReLU(inputs=self.pool3, f_size=512, k_size=3, stride=1, name="4_1")
+            self.conv4_2 = conv_layer_with_ReLU(inputs=self.conv4_1, f_size=512, k_size=3, stride=1, name="4_2")
+            self.conv4_3 = conv_layer_with_ReLU(inputs=self.conv4_2, f_size=512, k_size=3, stride=1, name="4_3")
+            self.pool4 = max_pool_2x2(self.conv4_3, k_size=2, stride=2, name='4')
+
+            self.conv5_1 = conv_layer_with_ReLU(inputs=self.pool4, f_size=512, k_size=3, stride=1, name="5_1")
+            self.conv5_2 = conv_layer_with_ReLU(inputs=self.conv5_1, f_size=512, k_size=3, stride=1, name="5_2")
+            self.conv5_3 = conv_layer_with_ReLU(inputs=self.conv5_2, f_size=512, k_size=3, stride=1, name="5_3")
+            self.pool5 = max_pool_2x2(self.conv5_3, k_size=2, stride=2, name='5')
+
+        #-----------------------------Build fully connvolutional layers-----------------------------
+        with tf.name_scope('fully_connected'):
+            self.conv6 = conv_layer_with_ReLU(inputs=self.pool5, f_size=4096, k_size=9, stride=1, name="6")
+            # self.dropout6 = tf.nn.dropout(self.conv6, keep_prob=keep_prob)
+
+            self.conv7 = conv_layer_with_ReLU(inputs=self.conv6, f_size=4096, k_size=1, stride=1, name="7")
+            # self.dropout7 = tf.nn.dropout(self.conv7, keep_prob=keep_prob)
+
+            self.conv8 = conv_layer_with_ReLU(inputs=self.conv7, f_size=num_classes, k_size=1, stride=1, name="8")
+
+
+        #-----------------------------Build network decoder-----------------------------
+        with tf.name_scope('decoder'):
+            # deconv_shape1 = self.pool4.get_shape()
+            # self.conv_t1 = conv_layer_with_ReLU_transpose(inputs=self.conv8, f_size=num_classes, k_size=4, stride=1, name="t1")
+
+            # self.conv9 = conv_layer_without_ReLU(inputs=self.conv_t1, f_size=num_classes, k_size=1, stride=1, name="9")
+
+            deconv_shape1 = self.pool4.get_shape()
+            W_t1 = weight_variable([4, 4, deconv_shape1[3].value, num_classes], name="W_t1")
+            b_t1 = bias_variable([deconv_shape1[3].value], name="b_t1")
+            self.conv_t1 = conv_layer_transpose_strided(self.conv8, W_t1, b_t1, output_shape=tf.shape(self.pool4))
+            self.fuse_1 = tf.add(self.conv_t1, self.pool4, name="fuse_1")
+
+            deconv_shape2 = self.pool3.get_shape()
+            W_t2 = weight_variable([4, 4, deconv_shape2[3].value, deconv_shape1[3].value], name="W_t2")
+            b_t2 = bias_variable([deconv_shape2[3].value], name="b_t2")
+            self.conv_t2 = conv_layer_transpose_strided(self.fuse_1, W_t2, b_t2, output_shape=tf.shape(self.pool3))
+            self.fuse_2 = tf.add(self.conv_t2, self.pool3, name="fuse_2")
+
+            shape = tf.shape(input_dict['images'])
+            W_t3 = weight_variable([16, 16, num_classes, deconv_shape2[3].value], name="W_t3")
+            b_t3 = bias_variable([num_classes], name="b_t3")
+
+            out = conv_layer_transpose_strided(self.fuse_2, W_t3, b_t3, output_shape=[shape[0], shape[1], shape[2], num_classes], stride=8)
+
+
+        # TODO the last layer with 'num_classes' channels
+        # out = None
+
         pred = tf.argmax(out, axis=-1)
-        softmax = None # TODO apply softmax to get the distributions for each pixel
+        # pred = tf.argmax(out, dimension=3, name="pred")
+        
+        # TODO apply softmax to get the distributions for each pixel
+        softmax = tf.nn.softmax(out)
 
         self.logits = out
         self.softmax = tf.identity(softmax, name='softmax')
@@ -143,8 +210,9 @@ class SegModel(BaseModel):
         for smpl_id in range(len(preds)):
             pred = preds[smpl_id]
             label = labels[smpl_id, :, :, 0]
+
             # TODO implement the metric Intersection Over Union
-            iou = 0
+            iou = np.sum(np.logical_and(label, pred)) / np.sum(np.logical_or(label, pred))
             ious.append(iou)
         return {'mean_IOU': np.mean(ious)}
 
