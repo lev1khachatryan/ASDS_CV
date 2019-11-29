@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description='')
 parser.add_argument('--dataset_path', dest='dataset_path',
                     default='dataset/',
                     help='name of the dataset')
-parser.add_argument('--epoch', dest='epoch', type=int, default=100, help='# of epoch')
+parser.add_argument('--epoch', dest='epoch', type=int, default=2, help='# of epoch')
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=1, help='# images in batch')
 parser.add_argument('--image_width', dest='image_width', type=int, default=288, help='scale images to this size')
 parser.add_argument('--image_height', dest='image_height', type=int, default=288, help='then crop to this size')
@@ -19,7 +19,7 @@ parser.add_argument('--test_start', dest='test_start', type=int, default=0, help
 parser.add_argument('--test_end', dest='test_end', type=int, default=100, help='epoch on which to stop test')
 
 parser.add_argument('--num_classes', dest='num_classes', type=int, default=2, help='number of output classes')
-parser.add_argument('--mode', dest='mode', default='train', help='train, test, test_val, freeze')
+parser.add_argument('--mode', dest='mode', default='test_val', help='train, test, test_val, freeze')
 parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default=os.path.dirname(__file__)+'/checkpoint',
                     help='models are saved here')
 parser.add_argument('--summaries_dir', dest='summaries_dir', default=os.path.dirname(__file__)+'/summary',
@@ -55,7 +55,7 @@ def main(_):
         if args.mode == 'train':
             model.train()
         elif args.mode == 'test':
-            model.test(args.test_out_dir, 99, ['softmax'], model.blending)
+            model.test(args.test_out_dir, 1, ['softmax'], model.blending)
         elif args.mode == 'test_val':
             model.measure_metrics(args, model.compute_IOU)
         elif args.mode == 'freeze':
