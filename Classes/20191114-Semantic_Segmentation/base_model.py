@@ -64,7 +64,8 @@ class BaseModel(object):
 
         self.outs_dict = self.build_graph(ins_dict, self.mode, self.num_classes)
 
-        self.totall_loss, self.losses_dict = self.get_losses(self.placeholders_dict, self.outs_dict)
+        # self.totall_loss, self.losses_dict = self.get_losses(self.placeholders_dict, self.outs_dict)
+        self.totall_loss, self.losses_dict = self.get_losses()
 
         self.summary_op, self.summary_writer_train, self.summary_writer_val = self.get_summaries(self.placeholders_dict,
                                                                                                  self.outs_dict,
