@@ -18,6 +18,11 @@ System overview. Picture comes from original paper.
 - [Microsoft COCO dataset](http://msvocds.blob.core.windows.net/coco2014/train2014.zip)
 - [WikiArt dataset](https://www.kaggle.com/c/painter-by-numbers)
 
+## Installation
+    $ git clone https://github.com/lev1khachatryan/ASDS_CV.git
+    $ cd ASDS_CV/FinalProject_SANet
+    $ python setup.py install
+
 ## My Running Environment
 <b>Hardware</b>
 - CPU: Intel® Core™ i7-8700X (3.70GHz x 12 cores, 24 threads)
@@ -36,3 +41,7 @@ System overview. Picture comes from original paper.
 - SciPy 0.19.1
 - CUDA 8.0.61
 - cuDNN 6.0.21
+
+## Contact
+If there's some suggestions you would like to give or if you're just feeling social,
+feel free to [email](mailto:levon.khachatryan.1996.db@gmail.com) me or connect with me on [LinkedIn](https://www.linkedin.com/in/levonkhachatryan/).
