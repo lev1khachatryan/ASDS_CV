@@ -16,7 +16,7 @@ from datetime import datetime
 from scipy.misc import imread, imresize
 
 
-DATA_SET_PATH = '../WikiArt/'
+DATA_SET_PATH = '../../_input/style/'
 
 
 def list_images(directory):
