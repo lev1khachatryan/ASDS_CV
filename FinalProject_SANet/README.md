@@ -38,7 +38,7 @@ System overview. Picture comes from original paper.
 - Python 3.6.2
 - NumPy 1.13.1
 - TensorFlow 1.4.0
-- SciPy 0.19.1
+- SciPy 1.1.0
 - CUDA 8.0.61
 - cuDNN 6.0.21
 
