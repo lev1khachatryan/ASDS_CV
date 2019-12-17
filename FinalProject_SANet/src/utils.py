@@ -1,33 +1,89 @@
-import scipy.misc, numpy as np, os, sys
+import numpy as np
+from os import listdir, mkdir, sep, path, walk
+from os.path import join, exists, splitext
+from scipy.misc import imread, imsave, imresize
 
-def save_img(out_path, img):
-    img = np.clip(img, 0, 255).astype(np.uint8)
-    scipy.misc.imsave(out_path, img)
+def list_images(directory):
+    images = []
+    for file in listdir(directory):
+        name = file.lower()
+        if name.endswith('.png'):
+            images.append(join(directory, file))
+        elif name.endswith('.jpg'):
+            images.append(join(directory, file))
+        elif name.endswith('.jpeg'):
+            images.append(join(directory, file))
+    return images
 
-def scale_img(style_path, style_scale):
-    scale = float(style_scale)
-    o0, o1, o2 = scipy.misc.imread(style_path, mode='RGB').shape
-    scale = float(style_scale)
-    new_shape = (int(o0 * scale), int(o1 * scale), o2)
-    style_target = _get_img(style_path, img_size=new_shape)
-    return style_target
 
-def get_img(src, img_size=False):
-   img = scipy.misc.imread(src, mode='RGB') # misc.imresize(, (256, 256, 3))
-   if not (len(img.shape) == 3 and img.shape[2] == 3):
-       img = np.dstack((img,img,img))
-   if img_size != False:
-       img = scipy.misc.imresize(img, img_size)
-   return img
+def get_train_images(paths, resize_len=512, crop_height=256, crop_width=256):
+    images = []
+    for path in paths:
+        image = imread(path, mode='RGB')
+        height, width, _ = image.shape
 
-def exists(p, msg):
-    assert os.path.exists(p), msg
+        if height < width:
+            new_height = resize_len
+            new_width  = int(width * new_height / height)
+        else:
+            new_width  = resize_len
+            new_height = int(height * new_width / width)
 
-def list_files(in_path):
-    files = []
-    for (dirpath, dirnames, filenames) in os.walk(in_path):
-        files.extend(filenames)
-        break
+        image = imresize(image, [new_height, new_width], interp='nearest')
 
-    return files
+        # crop the image
+        start_h = np.random.choice(new_height - crop_height + 1)
+        start_w = np.random.choice(new_width - crop_width + 1)
+        image = image[start_h:(start_h + crop_height), start_w:(start_w + crop_width), :]
 
+        images.append(image)
+
+    images = np.stack(images, axis=0)
+
+    return images
+
+
+def get_images(paths, height=None, width=None):
+    if isinstance(paths, str):
+        paths = [paths]
+
+    images = []
+    for path in paths:
+        image = imread(path, mode='RGB')
+
+        if height is not None and width is not None:
+            image = imresize(image, [height, width], interp='nearest')
+
+        images.append(image)
+
+    images = np.stack(images, axis=0)
+
+    return images
+
+
+def save_images(datas, contents_path, styles_path, save_dir, suffix=None):
+
+    assert(len(datas) == len(contents_path) * len(styles_path))
+
+    if not exists(save_dir):
+        mkdir(save_dir)
+
+    if suffix is None:
+        suffix = ''
+
+    data_idx = 0
+    for content_path in contents_path:
+        for style_path in styles_path:
+            data = datas[data_idx]
+            data_idx += 1
+
+            content_path_name, content_ext = splitext(content_path)
+            style_path_name, style_ext = splitext(style_path)
+
+            content_name = content_path_name.split(sep)[-1]
+            style_name = style_path_name.split(sep)[-1]
+            
+            save_path = join(save_dir, '%s-%s%s%s' % 
+                (content_name, style_name, suffix, content_ext))
+
+            imsave(save_path, data)
