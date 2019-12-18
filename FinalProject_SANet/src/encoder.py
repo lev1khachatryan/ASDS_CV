@@ -6,6 +6,7 @@
 
 import numpy as np
 import tensorflow as tf
+from utils import *
 
 
 ENCODER_LAYERS = (
@@ -24,7 +25,7 @@ ENCODER_LAYERS = (
 )
 
 
-class Encoder(object):
+class Encoder:
 
     def __init__(self, weights_path):
         # load weights (kernel and bias) from npz file
