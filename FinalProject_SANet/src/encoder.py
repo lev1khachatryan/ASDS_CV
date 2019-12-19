@@ -22,6 +22,9 @@ ENCODER_LAYERS = (
 )
 
 class Encoder:
+    '''
+    In this work, the pre-trained VGG-19 network is employed as encoder.
+    '''
 
     def __init__(self, weights_path):
         '''
