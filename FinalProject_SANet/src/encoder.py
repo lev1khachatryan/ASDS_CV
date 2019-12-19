@@ -1,9 +1,6 @@
 # Encoder is fixed to the first few layers (up to relu5_1)
 # of VGG-19 (pre-trained on ImageNet)
 
-# This code is a modified version of Anish Athalye's vgg.py
-# https://github.com/anishathalye/neural-style/blob/master/vgg.py
-
 import numpy as np
 import tensorflow as tf
 from utils import *
@@ -20,15 +17,25 @@ ENCODER_LAYERS = (
     'conv4_1', 'relu4_1', 'conv4_2', 'relu4_2', 
     'conv4_3', 'relu4_3', 'conv4_4', 'relu4_4', 'pool4',
 
-    'conv5_1', 'relu5_1', 'conv5_2', 'relu5_2', 
-    'conv5_3', 'relu5_3', 'conv5_4', 'relu5_4'
+    'conv5_1', 'relu5_1'
 )
-
 
 class Encoder:
 
     def __init__(self, weights_path):
-        # load weights (kernel and bias) from npz file
+        '''
+        Load vgg19 weights from npz file.
+        Parameters
+        ----------
+        weights_path : string
+            Relatrive path to pretrained weights
+        Returns:
+        ----------
+        None
+            The aim is to create object with appropriate fields
+        '''
+
+        # load weights from npz file
         weights = np.load(weights_path)
 
         idx = 0
@@ -53,6 +60,18 @@ class Encoder:
                     self.weight_vars.append((W, b))
 
     def encode(self, image):
+        '''
+        Create the computational graph and return weights values.
+        Parameters
+        ----------
+        image : array_like
+            Four dimension tensor (batch_size, height, width, channels)
+        Returns:
+        ----------
+        layers : dictionary
+            Keys are the name of layers and values are the pretrained weights.
+        '''
+
         # create the computational graph
         idx = 0
         layers = {}
@@ -76,17 +95,42 @@ class Encoder:
 
         assert(len(layers) == len(ENCODER_LAYERS))
 
-        enc = layers[ENCODER_LAYERS[-1]]
-
-        return enc, layers
+        return layers
 
     def preprocess(self, image, mode='BGR'):
+        '''
+        Normalize the image.
+        Parameters
+        ----------
+        image : array_like
+            Four dimension tensor (batch_size, height, width, channels)
+        mode : string, optional
+            By default, assumed that images are reversed from RGB to BGR. 
+        Returns:
+        ----------
+        image : array_like
+            Normalized array
+        '''
+
         if mode == 'BGR':
             return image - np.array([103.939, 116.779, 123.68])
         else:
             return image - np.array([123.68, 116.779, 103.939])
 
     def deprocess(self, image, mode='BGR'):
+        '''
+        Denormalize the image.
+        Parameters
+        ----------
+        image : array_like
+            Four dimension tensor (batch_size, height, width, channels)
+        mode : string, optional
+            By default, assumed that images are reversed from RGB to BGR. 
+        Returns:
+        ----------
+        image : array_like
+            Denormalized array
+        '''
         if mode == 'BGR':
             return image + np.array([103.939, 116.779, 123.68])
         else:
@@ -94,6 +138,22 @@ class Encoder:
 
 
 def conv2d(x, kernel, bias):
+    '''
+    Convolution operation with reflect padding and valid.
+    Parameters
+    ----------
+    x : array_like
+        Four dimension tensor (batch_size, height, width, channels)
+    kernel : ndarray
+        Kernel we want to apply
+    bias : ndarray
+        bias we want to add
+    Returns:
+    ----------
+    out : array_like
+        convoluted x with kernel and added by bias
+    '''
+
     # padding image with reflection mode
     x_padded = tf.pad(x, [[0, 0], [1, 1], [1, 1], [0, 0]], mode='REFLECT')
 
@@ -105,4 +165,15 @@ def conv2d(x, kernel, bias):
 
 
 def pool2d(x):
+    '''
+    Max pooling.
+    Parameters
+    ----------
+    x : array_like
+        Four dimension tensor (batch_size, height, width, channels)
+    Returns:
+    ----------
+    array_like
+        2D max pooled input x
+    '''
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
