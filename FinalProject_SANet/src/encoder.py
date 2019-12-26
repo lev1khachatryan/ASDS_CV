@@ -4,6 +4,7 @@
 import numpy as np
 import tensorflow as tf
 from utils import *
+from functions import *
 
 
 ENCODER_LAYERS = (
@@ -87,7 +88,7 @@ class Encoder:
             if kind == 'conv':
                 kernel, bias = self.weight_vars[idx]
                 idx += 1
-                current = conv2d(current, kernel, bias)
+                current = conv2d(current, kernel, bias, use_relu=False)
 
             elif kind == 'relu':
                 current = tf.nn.relu(current)
@@ -139,45 +140,3 @@ class Encoder:
             return image + np.array([103.939, 116.779, 123.68])
         else:
             return image + np.array([123.68, 116.779, 103.939])
-
-
-def conv2d(x, kernel, bias):
-    '''
-    Convolution operation with reflect padding and valid.
-    Parameters
-    ----------
-    x : array_like
-        Four dimension tensor (batch_size, height, width, channels)
-    kernel : ndarray
-        Kernel we want to apply
-    bias : ndarray
-        bias we want to add
-    Returns:
-    ----------
-    out : array_like
-        convoluted x with kernel and added by bias
-    '''
-
-    # padding image with reflection mode
-    x_padded = tf.pad(x, [[0, 0], [1, 1], [1, 1], [0, 0]], mode='REFLECT')
-
-    # conv and add bias
-    out = tf.nn.conv2d(x_padded, kernel, strides=[1, 1, 1, 1], padding='VALID')
-    out = tf.nn.bias_add(out, bias)
-
-    return out
-
-
-def pool2d(x):
-    '''
-    Max pooling.
-    Parameters
-    ----------
-    x : array_like
-        Four dimension tensor (batch_size, height, width, channels)
-    Returns:
-    ----------
-    array_like
-        2D max pooled input x
-    '''
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
