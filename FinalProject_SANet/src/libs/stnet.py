@@ -34,19 +34,19 @@ class STNet:
         self.encoded_content_layers = enc_c_layers
         self.encoded_style_layers   = enc_s_layers
 
-        target_features = self.SAModule.map(enc_c_layers['relu4_1'], enc_c_layers['relu5_1'], enc_s_layers['relu4_1'], enc_s_layers['relu5_1'])
-        self.target_features = target_features
+        Fcsc_m = self.SAModule.map(enc_c_layers['relu4_1'], enc_c_layers['relu5_1'], enc_s_layers['relu4_1'], enc_s_layers['relu5_1'])
+        self.Fcsc_m = Fcsc_m
 
-        # decode target features back to image
-        generated_img = self.decoder.decode(target_features)
+        # decode target features back to image (generate image)
+        Ics = self.decoder.decode(Fcsc_m)
 
         # deprocess image
-        generated_img = self.encoder.deprocess(generated_img)
+        Ics = self.encoder.deprocess(Ics)
 
         # switch BGR back to RGB
-        generated_img = tf.reverse(generated_img, axis=[-1])
+        Ics = tf.reverse(Ics, axis=[-1])
 
         # clip to 0..255
-        generated_img = tf.clip_by_value(generated_img, 0.0, 255.0)
+        Ics = tf.clip_by_value(Ics, 0.0, 255.0)
 
-        return generated_img
+        return Ics
