@@ -5,7 +5,7 @@ of VGG-19 (pre-trained on ImageNet)
 
 import numpy as np
 import tensorflow as tf
-from utils import *
+# from utils import *
 from functions import *
 
 
