@@ -4,7 +4,7 @@ Useful functions, specific for all module parts of code
 
 import numpy as np
 import tensorflow as tf
-from utils import *
+# from utils import *
 
 def conv2d(x, kernel, bias, use_relu=True):
     '''
