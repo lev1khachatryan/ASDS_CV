@@ -5,7 +5,7 @@ by nearest up-sampling to reduce checker-board effects.
 
 import numpy as np
 import tensorflow as tf
-from utils import *
+# from utils import *
 from functions import *
 
 
