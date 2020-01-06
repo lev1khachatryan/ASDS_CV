@@ -34,8 +34,7 @@ class STNet:
         self.encoded_content_layers = enc_c_layers
         self.encoded_style_layers   = enc_s_layers
 
-        SAModule = SAMod(512)
-        target_features = SAModule.map(enc_c_layers['relu4_1'], enc_c_layers['relu5_1'], enc_s_layers['relu4_1'], enc_s_layers['relu5_1'])
+        target_features = self.SAModule.map(enc_c_layers['relu4_1'], enc_c_layers['relu5_1'], enc_s_layers['relu4_1'], enc_s_layers['relu5_1'])
         self.target_features = target_features
 
         # decode target features back to image
