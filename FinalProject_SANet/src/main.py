@@ -1,10 +1,12 @@
-# Demo - train the style transfer network & use it to generate an image
+'''
+Train or make inference the style transfer network
+'''
 
 from __future__ import print_function
 
-from train import train
-from infer import stylize
-from utils import list_images
+from libs.train import train
+from libs.infer import stylize
+from libs.utils import list_images
 
 
 IS_TRAINING = False
