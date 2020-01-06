@@ -1,5 +1,5 @@
 '''
-Encoder is fixed to the first few layers (up to relu5_1)
+Encoder is fixed to the first few layers (up to relu5_1) 
 of VGG-19 (pre-trained on ImageNet)
 '''
 
