@@ -27,6 +27,6 @@ class SAMod:
         Fcsc_5_up = upsample(Fcsc_5)
         
         Fcsc_4_plus_5 = Fcsc_4 + Fcsc_5_up
-        Fcsc_m = conv(Fcsc_4_plus_5, num_filter, kernel=3, stride=1, pad_type='reflect')
+        Fcsc_m = conv(Fcsc_4_plus_5, self.num_filter, kernel=3, stride=1, pad_type='reflect')
         
         return Fcsc_m
