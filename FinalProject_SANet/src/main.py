@@ -25,7 +25,7 @@ MODEL_SAVE_PATHS = [
 # for inferring (stylize)
 INFERRING_CONTENT_DIR = 'images/content'
 INFERRING_STYLE_DIR = 'images/style'
-OUTPUTS_DIR = 'outputs'
+OUTPUTS_DIR = 'images/output'
 
 
 def main():
