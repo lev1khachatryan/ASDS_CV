@@ -7,7 +7,7 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 
-from stnet import STNet
+from transform import Transform
 from utils import get_train_images
 
 
@@ -15,7 +15,7 @@ STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
 TRAINING_IMAGE_SHAPE = (256, 256, 3) # (height, width, color_channels)
 
-EPOCHS = 4
+EPOCHS = 2
 EPSILON = 1e-5
 BATCH_SIZE = 8
 LEARNING_RATE = 1e-4
@@ -29,7 +29,7 @@ def train(style_weight, content_imgs_path, style_imgs_path, encoder_path,
         from datetime import datetime
         start_time = datetime.now()
 
-    # guarantee the size of content and style images to be a multiple of BATCH_SIZE
+    # guarantee the count of content and style images to be a multiple of BATCH_SIZE
     num_imgs = min(len(content_imgs_path), len(style_imgs_path))
     content_imgs_path = content_imgs_path[:num_imgs]
     style_imgs_path   = style_imgs_path[:num_imgs]
