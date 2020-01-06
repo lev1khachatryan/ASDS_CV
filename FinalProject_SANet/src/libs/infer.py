@@ -5,7 +5,7 @@ a style transferred image with a specific style
 
 import tensorflow as tf
 
-from transform import Transform
+from stnet import STNet
 from utils import get_images, save_images
 
 
