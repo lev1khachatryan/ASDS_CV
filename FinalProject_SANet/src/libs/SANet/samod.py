@@ -24,7 +24,7 @@ class SAMod:
     def map(self, content_4_1, content_5_1. style_4_1, style_5_1):
         Fcsc_4 = self.SANet1.map(content_4_1, style_4_1)
         
-        Fcsc_5 = self.SANet1.map(content_5_1, style_5_1)
+        Fcsc_5 = self.SANet2.map(content_5_1, style_5_1)
         Fcsc_5_up = upsample(Fcsc_5)
         
         Fcsc_4_plus_5 = Fcsc_4 + Fcsc_5_up
