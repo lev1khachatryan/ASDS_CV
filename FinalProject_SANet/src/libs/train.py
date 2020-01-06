@@ -23,7 +23,7 @@ LR_DECAY_RATE = 5e-5
 DECAY_STEPS = 1.0
 
 
-def train(style_weight, content_imgs_path, style_imgs_path, encoder_path, 
+def train(style_weight, content_weight, content_imgs_path, style_imgs_path, encoder_path, 
           model_save_path, debug=False, logging_period=100):
     if debug:
         from datetime import datetime
@@ -51,19 +51,20 @@ def train(style_weight, content_imgs_path, style_imgs_path, encoder_path,
         # create the style transfer net
         stn = STNet(encoder_path)
 
-        # pass content and style to the stn, getting the generated_img
-        generated_img = stn.transform(content, style)
+        # pass content and style to the stn, getting the Ics (generated image)
+        Ics = stn.transform(content, style)
 
-        # get the target feature maps which is the output of AdaIN
-        target_features = stn.target_features
+        # get the target feature maps which is the output of SAModule
+        Fcsc_m = stn.Fcsc_m
 
-        # pass the generated_img to the encoder, and use the output compute loss
-        generated_img = tf.reverse(generated_img, axis=[-1])  # switch RGB to BGR
-        generated_img = stn.encoder.preprocess(generated_img) # preprocess image
-        enc_gen_layers = stn.encoder.encode(generated_img)
+        # pass the Ics to the encoder, and use the output compute loss
+        Ics = tf.reverse(Ics, axis=[-1])  # switch RGB to BGR
+        Ics = stn.encoder.preprocess(Ics) # preprocess image
+        enc_gen_layers = stn.encoder.encode(Ics)
 
         # compute the content loss
-        content_loss = tf.reduce_sum(tf.reduce_mean(tf.square(enc_gen_layers['relu5_1'] - target_features), axis=[1, 2])) # not full
+        content_loss = tf.reduce_sum(tf.reduce_mean(tf.square(enc_gen_layers['relu4_1'] - stn.encoded_content_layers['relu4_1']), axis=[1, 2]) + 
+        							 tf.reduce_mean(tf.square(enc_gen_layers['relu5_1'] - stn.encoded_content_layers['relu5_1']), axis=[1, 2]))
 
         # compute the style loss
         style_layer_loss = []
@@ -85,7 +86,7 @@ def train(style_weight, content_imgs_path, style_imgs_path, encoder_path,
         style_loss = tf.reduce_sum(style_layer_loss)
 
         # compute the total loss
-        loss = content_loss + style_weight * style_loss
+        loss = content_weight * content_loss + style_weight * style_loss
 
         # Training step
         global_step = tf.Variable(0, trainable=False)
@@ -138,7 +139,7 @@ def train(style_weight, content_imgs_path, style_imgs_path, encoder_path,
                                 feed_dict={content: content_batch, style: style_batch})
 
                             print('step: %d,  total loss: %.3f,  elapsed time: %s' % (step, _loss, elapsed_time))
-                            print('content loss: %.3f' % (_content_loss))
+                            print('content loss: %.3f,  weighted content loss: %.3f\n' % (_content_loss, content_weight * _content_loss))
                             print('style loss  : %.3f,  weighted style loss: %.3f\n' % (_style_loss, style_weight * _style_loss))
         except Exception as ex:
             saver.save(sess, model_save_path, global_step=step)
