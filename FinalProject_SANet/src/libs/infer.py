@@ -8,7 +8,6 @@ import tensorflow as tf
 from stnet import STNet
 from utils import get_images, save_images
 
-
 def stylize(contents_path, styles_path, output_dir, encoder_path, model_path, 
             resize_height=None, resize_width=None, suffix=None):
 
