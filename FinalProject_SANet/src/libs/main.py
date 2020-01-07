@@ -38,7 +38,7 @@ def main():
         tf.reset_default_graph()
 
         for style_weight, content_weight, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS, MODEL_SAVE_PATHS):
-            print('\n>>> Begin to train the network with the style weight: %.2f\n' % style_weight)
+            print('\n>>> Begin to train the network')
 
             train(style_weight, content_weight, content_imgs_path, style_imgs_path, ENCODER_WEIGHTS_PATH, 
                   model_save_path, logging_period=LOGGING_PERIOD, debug=True)
@@ -51,7 +51,7 @@ def main():
         style_imgs_path   = list_images(INFERRING_STYLE_DIR)
 
         for style_weight, content_weight, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS, MODEL_SAVE_PATHS):
-            print('\n>>> Begin to stylize images with style weight: %.2f\n' % style_weight)
+            print('\n>>> Begin to stylize images')
 
             stylize(content_imgs_path, style_imgs_path, OUTPUTS_DIR, 
                     ENCODER_WEIGHTS_PATH, model_save_path, 
