@@ -10,7 +10,7 @@ from infer import stylize
 from utils import list_images
 
 
-IS_TRAINING = True
+IS_TRAINING = False
 
 # for training
 TRAINING_CONTENT_DIR = '../../_input/content'
@@ -22,10 +22,10 @@ STYLE_WEIGHTS = [3.0]
 CONTENT_WEIGHTS = [1.0]
 MODEL_SAVE_PATHS = ['../../models/style_weight_2e0.ckpt']
 
-# # for inferring (stylize)
-# INFERRING_CONTENT_DIR = 'images/content'
-# INFERRING_STYLE_DIR = 'images/style'
-# OUTPUTS_DIR = 'images/output'
+# for inferring (stylize)
+INFERRING_CONTENT_DIR = '../../_inference/content'
+INFERRING_STYLE_DIR = '../../_inference/style'
+OUTPUTS_DIR = '../../_inference/output'
 
 
 def main():
@@ -50,12 +50,12 @@ def main():
         content_imgs_path = list_images(INFERRING_CONTENT_DIR)
         style_imgs_path   = list_images(INFERRING_STYLE_DIR)
 
-        for style_weight, model_save_path in zip(STYLE_WEIGHTS, MODEL_SAVE_PATHS):
+        for style_weight, content_weight, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS, MODEL_SAVE_PATHS):
             print('\n>>> Begin to stylize images with style weight: %.2f\n' % style_weight)
 
             stylize(content_imgs_path, style_imgs_path, OUTPUTS_DIR, 
                     ENCODER_WEIGHTS_PATH, model_save_path, 
-                    suffix='-' + str(style_weight))
+                    suffix='-' + str(style_weight) + '-' + str(content_weight))
 
         print('\n>>> Successfully! Done all stylizing...\n')
 
