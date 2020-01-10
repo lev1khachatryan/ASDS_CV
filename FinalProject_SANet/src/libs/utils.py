@@ -60,9 +60,9 @@ def get_images(paths, height=None, width=None):
             image = imresize(image, [height, width], interp='nearest')
         
         # Escape image with odd shapes (for training)
-        # height = int(image.shape[0] / 2) * 2
-        # width  = int(image.shape[1] / 2) * 2
-        # image  = imresize(image, [height, width], interp='nearest')
+        height = int(image.shape[0] / 2) * 2
+        width  = int(image.shape[1] / 2) * 2
+        image  = imresize(image, [height, width], interp='nearest')
 
         images.append(image)
 
