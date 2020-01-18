@@ -15,7 +15,7 @@ STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
 TRAINING_IMAGE_SHAPE = (256, 256, 3) # (height, width, color_channels)
 
-EPOCHS = 2
+EPOCHS = 100
 EPSILON = 1e-5
 BATCH_SIZE = 8
 LEARNING_RATE = 1e-4
@@ -63,7 +63,7 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
         Ics_enc = stn.encoder.encode(Ics)
 
         # compute the content loss
-        content_loss = tf.reduce_sum(tf.reduce_mean(tf.square(Ics_enc['relu4_1'] - stn.encoded_content_layers['relu4_1']), axis=[1, 2]),
+        content_loss = tf.reduce_sum(tf.reduce_mean(tf.square(Ics_enc['relu4_1'] - stn.encoded_content_layers['relu4_1']), axis=[1, 2]) + \
         							 tf.reduce_mean(tf.square(Ics_enc['relu5_1'] - stn.encoded_content_layers['relu5_1']), axis=[1, 2]))
 
         # compute the style loss
@@ -81,6 +81,9 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
             l2_mean  = tf.reduce_sum(tf.square(meanG - meanS))
             l2_sigma = tf.reduce_sum(tf.square(sigmaG - sigmaS))
 
+            # l2_mean  = tf.reduce_mean(tf.square(meanG - meanS))
+            # l2_sigma = tf.reduce_mean(tf.square(sigmaG - sigmaS))
+
             style_layer_loss.append(l2_mean + l2_sigma)
 
         style_loss = tf.reduce_sum(style_layer_loss)
@@ -92,18 +95,18 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
         Iss = stn.transform(style, style)
         Iss = tf.reverse(Iss, axis=[-1])
         Iss = stn.encoder.preprocess(Iss)
-        loss_lambda1 = tf.reduce_sum(tf.reduce_mean(tf.square(Icc - content), axis=[1, 2]),
+        loss_lambda1 = tf.reduce_sum(tf.reduce_mean(tf.square(Icc - content), axis=[1, 2]) + \
                                      tf.reduce_mean(tf.square(Iss - style), axis=[1, 2]))
 
         # compute the Identity loss lambda 2
         Icc_enc = stn.encoder.encode(Icc)
         Iss_enc = stn.encoder.encode(Iss)
-        # loss_lambda2 = tf.reduce_sum(tf.reduce_mean(tf.square(Icc_enc['relu1_1'] - stn.encoded_content_layers['relu1_1']), axis=[1, 2]),
+        # loss_lambda2 = tf.reduce_sum(tf.reduce_mean(tf.square(Icc_enc['relu1_1'] - stn.encoded_content_layers['relu1_1']), axis=[1, 2]) +
         #                              tf.reduce_mean(tf.square(Iss_enc['relu1_1'] - stn.encoded_style_layers['relu1_1']), axis=[1, 2]))
         loss_lambda2 = []
         for layer in STYLE_LAYERS:
-            loss_lambda2_ = tf.reduce_mean(tf.square(Icc_enc[layer] - stn.encoded_content_layers[layer]), axis=[1, 2]) +
-                            tf.reduce_mean(tf.square(Iss_enc[layer] - stn.encoded_style_layers[layer]), axis=[1, 2])
+            loss_lambda2_ = tf.reduce_mean(tf.square(Icc_enc[layer] - stn.encoded_content_layers[layer])) + \
+                            tf.reduce_mean(tf.square(Iss_enc[layer] - stn.encoded_style_layers[layer]))
 
             loss_lambda2.append(loss_lambda2_)
 
@@ -112,10 +115,7 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
 
         # compute the total loss
-        loss =  content_weight * content_loss +
-                style_weight * style_loss +
-                lambda1 * loss_lambda1 +
-                lambda2 * loss_lambda2
+        loss =  content_weight*content_loss + style_weight*style_loss + lambda1*loss_lambda1 + lambda2 * loss_lambda2
 
         # Training step
         global_step = tf.Variable(0, trainable=False)
