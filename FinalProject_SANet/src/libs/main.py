@@ -20,6 +20,8 @@ LOGGING_PERIOD = 20
 
 STYLE_WEIGHTS = [3.0]
 CONTENT_WEIGHTS = [1.0]
+LAMBDA1 = [1.0]
+LAMBDA2 = [50.0]
 MODEL_SAVE_PATHS = ['../../models/style_weight_2e0.ckpt']
 
 # for inferring (stylize)
@@ -37,10 +39,10 @@ def main():
 
         tf.reset_default_graph()
 
-        for style_weight, content_weight, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS, MODEL_SAVE_PATHS):
+        for style_weight, content_weight, lambda1, lambda2, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS,LAMBDA1, LAMBDA2, MODEL_SAVE_PATHS):
             print('\n>>> Begin to train the network')
 
-            train(style_weight, content_weight, content_imgs_path, style_imgs_path, ENCODER_WEIGHTS_PATH, 
+            train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, style_imgs_path, ENCODER_WEIGHTS_PATH, 
                   model_save_path, logging_period=LOGGING_PERIOD, debug=True)
 
         print('\n>>> Successfully! Done all training...\n')
@@ -50,12 +52,12 @@ def main():
         content_imgs_path = list_images(INFERRING_CONTENT_DIR)
         style_imgs_path   = list_images(INFERRING_STYLE_DIR)
 
-        for style_weight, content_weight, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS, MODEL_SAVE_PATHS):
+        for style_weight, content_weight, lambda1, lambda2, model_save_path in zip(STYLE_WEIGHTS, CONTENT_WEIGHTS,LAMBDA1, LAMBDA2, MODEL_SAVE_PATHS):
             print('\n>>> Begin to stylize images')
 
             stylize(content_imgs_path, style_imgs_path, OUTPUTS_DIR, 
                     ENCODER_WEIGHTS_PATH, model_save_path, 
-                    suffix='-' + str(style_weight) + '-' + str(content_weight))
+                    suffix='-' + str(style_weight) + '-' + str(content_weight) + '-' + str(lambda1) + '-' + str(lambda2))
 
         print('\n>>> Successfully! Done all stylizing...\n')
 
