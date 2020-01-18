@@ -13,9 +13,9 @@ from utils import get_train_images
 
 STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
-TRAINING_IMAGE_SHAPE = (256, 256, 3) # (height, width, color_channels)
+TRAINING_IMAGE_SHAPE = (512, 512, 3) # (height, width, color_channels)
 
-EPOCHS = 100
+EPOCHS = 10000
 EPSILON = 1e-5
 BATCH_SIZE = 8
 LEARNING_RATE = 1e-4
@@ -51,15 +51,15 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
         # create the style transfer net
         stn = STNet(encoder_path)
 
+        # get the target feature maps which is the output of SAModule
+        # Fcsc_m = stn.Fcsc_m
+
         # pass content and style to the stn, getting the Ics (generated image)
         Ics = stn.transform(content, style)
 
-        # get the target feature maps which is the output of SAModule
-        Fcsc_m = stn.Fcsc_m
-
         # pass the Ics to the encoder, and use the output compute loss
-        Ics = tf.reverse(Ics, axis=[-1])  # switch RGB to BGR
-        Ics = stn.encoder.preprocess(Ics) # preprocess image
+        # Ics = tf.reverse(Ics, axis=[-1])  # switch RGB to BGR
+        # Ics = stn.encoder.preprocess(Ics) # preprocess image
         Ics_enc = stn.encoder.encode(Ics)
 
         # compute the content loss
@@ -90,11 +90,11 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
         # compute the Identity loss lambda 1
         Icc = stn.transform(content, content)
-        Icc = tf.reverse(Icc, axis=[-1])
-        Icc = stn.encoder.preprocess(Icc)
+        # Icc = tf.reverse(Icc, axis=[-1])
+        # Icc = stn.encoder.preprocess(Icc)
         Iss = stn.transform(style, style)
-        Iss = tf.reverse(Iss, axis=[-1])
-        Iss = stn.encoder.preprocess(Iss)
+        # Iss = tf.reverse(Iss, axis=[-1])
+        # Iss = stn.encoder.preprocess(Iss)
         loss_lambda1 = tf.reduce_sum(tf.reduce_mean(tf.square(Icc - content), axis=[1, 2]) + \
                                      tf.reduce_mean(tf.square(Iss - style), axis=[1, 2]))
 
