@@ -104,44 +104,44 @@ class Encoder:
 
         return layers
 
-    def preprocess(self, image, mode='BGR'):
-        '''
-        Normalize the image.
-        Parameters
-        ----------
-        image : array_like
-            Four dimension tensor (batch_size, height, width, channels)
-        mode : string, optional
-            By default, assumed that images are reversed from RGB to BGR. 
-        Returns:
-        ----------
-        image : array_like
-            Normalized array
-        '''
+    # def preprocess(self, image, mode='BGR'):
+    #     '''
+    #     Normalize the image.
+    #     Parameters
+    #     ----------
+    #     image : array_like
+    #         Four dimension tensor (batch_size, height, width, channels)
+    #     mode : string, optional
+    #         By default, assumed that images are reversed from RGB to BGR. 
+    #     Returns:
+    #     ----------
+    #     image : array_like
+    #         Normalized array
+    #     '''
 
-        if mode == 'BGR':
-            return image - np.array([103.939, 116.779, 123.68])
-        else:
-            return image - np.array([123.68, 116.779, 103.939])
+    #     if mode == 'BGR':
+    #         return image - np.array([103.939, 116.779, 123.68])
+    #     else:
+    #         return image - np.array([123.68, 116.779, 103.939])
 
-    def deprocess(self, image, mode='BGR'):
-        '''
-        Denormalize the image.
-        Parameters
-        ----------
-        image : array_like
-            Four dimension tensor (batch_size, height, width, channels)
-        mode : string, optional
-            By default, assumed that images are reversed from RGB to BGR. 
-        Returns:
-        ----------
-        image : array_like
-            Denormalized array
-        '''
-        if mode == 'BGR':
-            return image + np.array([103.939, 116.779, 123.68])
-        else:
-            return image + np.array([123.68, 116.779, 103.939])
+    # def deprocess(self, image, mode='BGR'):
+    #     '''
+    #     Denormalize the image.
+    #     Parameters
+    #     ----------
+    #     image : array_like
+    #         Four dimension tensor (batch_size, height, width, channels)
+    #     mode : string, optional
+    #         By default, assumed that images are reversed from RGB to BGR. 
+    #     Returns:
+    #     ----------
+    #     image : array_like
+    #         Denormalized array
+    #     '''
+    #     if mode == 'BGR':
+    #         return image + np.array([103.939, 116.779, 123.68])
+    #     else:
+    #         return image + np.array([123.68, 116.779, 103.939])
 
 def conv2d(x, kernel, bias, use_relu=True):
     '''
