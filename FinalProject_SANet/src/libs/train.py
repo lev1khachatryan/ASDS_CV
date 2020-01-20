@@ -4,6 +4,10 @@ Train the Style Transfer Net
 
 from __future__ import print_function
 
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+# import tensorflow as tf
+
 import numpy as np
 import tensorflow as tf
 
@@ -15,16 +19,16 @@ STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
 TRAINING_IMAGE_SHAPE = (512, 512, 3) # (height, width, color_channels)
 
-EPOCHS = 10000
+EPOCHS = 100
 EPSILON = 1e-5
-BATCH_SIZE = 8
+BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
 LR_DECAY_RATE = 5e-5
 DECAY_STEPS = 1.0
 
 
 def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, style_imgs_path, encoder_path, 
-          model_save_path, debug=False, logging_period=100):
+          model_save_path, debug=True, logging_period=100):
     if debug:
         from datetime import datetime
         start_time = datetime.now()
@@ -139,7 +143,6 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
         try:
             for epoch in range(EPOCHS):
-
                 np.random.shuffle(content_imgs_path)
                 np.random.shuffle(style_imgs_path)
 
@@ -156,7 +159,8 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
                     step += 1
 
-                    if step % 1000 == 0:
+                    # if step % 1000 == 0:
+                    if step % 10 == 0:
                         saver.save(sess, model_save_path, global_step=step, write_meta_graph=False)
 
                     if debug:
@@ -164,12 +168,14 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
                         if is_last_step or step == 1 or step % logging_period == 0:
                             elapsed_time = datetime.now() - start_time
-                            _content_loss, _style_loss, _loss = sess.run([content_loss, style_loss, loss], 
+                            _content_loss, _style_loss, _loss_lambda1, _loss_lambda2, _loss = sess.run([content_loss, style_loss, loss_lambda1, loss_lambda2, loss], 
                                 feed_dict={content: content_batch, style: style_batch})
 
                             print('step: %d,  total loss: %.3f,  elapsed time: %s' % (step, _loss, elapsed_time))
                             print('content loss: %.3f,  weighted content loss: %.3f\n' % (_content_loss, content_weight * _content_loss))
                             print('style loss  : %.3f,  weighted style loss: %.3f\n' % (_style_loss, style_weight * _style_loss))
+                            print('lambda1 loss  : %.3f,  weighted lambda1 loss: %.3f\n' % (_loss_lambda1, lambda1 * _loss_lambda1))
+                            print('lambda2 loss  : %.3f,  weighted lambda2 loss: %.3f\n' % (_loss_lambda2, lambda2 * _loss_lambda2))
         except Exception as ex:
             saver.save(sess, model_save_path, global_step=step)
             print('\nSomething wrong happens! Current model is saved to <%s>' % tmp_save_path)
