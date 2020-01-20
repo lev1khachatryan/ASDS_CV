@@ -19,7 +19,7 @@ STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
 TRAINING_IMAGE_SHAPE = (512, 512, 3) # (height, width, color_channels)
 
-EPOCHS = 100
+EPOCHS = 500
 EPSILON = 1e-5
 BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
@@ -28,7 +28,7 @@ DECAY_STEPS = 1.0
 
 
 def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, style_imgs_path, encoder_path, 
-          model_save_path, debug=True, logging_period=100):
+          model_save_path, debug=True, logging_period=10):
     if debug:
         from datetime import datetime
         start_time = datetime.now()
@@ -159,7 +159,6 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
                     step += 1
 
-                    # if step % 1000 == 0:
                     if step % 10 == 0:
                         saver.save(sess, model_save_path, global_step=step, write_meta_graph=False)
 
