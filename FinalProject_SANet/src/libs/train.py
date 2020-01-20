@@ -19,7 +19,7 @@ STYLE_LAYERS  = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1')
 
 TRAINING_IMAGE_SHAPE = (512, 512, 3) # (height, width, color_channels)
 
-EPOCHS = 500
+EPOCHS = 1000
 EPSILON = 1e-5
 BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
@@ -159,7 +159,7 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
 
                     step += 1
 
-                    if step % 10 == 0:
+                    if step % 50 == 0:
                         saver.save(sess, model_save_path, global_step=step, write_meta_graph=False)
 
                     if debug:
@@ -171,9 +171,9 @@ def train(style_weight, content_weight, lambda1, lambda2, content_imgs_path, sty
                                 feed_dict={content: content_batch, style: style_batch})
 
                             print('step: %d,  total loss: %.3f,  elapsed time: %s' % (step, _loss, elapsed_time))
-                            print('content loss: %.3f,  weighted content loss: %.3f\n' % (_content_loss, content_weight * _content_loss))
-                            print('style loss  : %.3f,  weighted style loss: %.3f\n' % (_style_loss, style_weight * _style_loss))
-                            print('lambda1 loss  : %.3f,  weighted lambda1 loss: %.3f\n' % (_loss_lambda1, lambda1 * _loss_lambda1))
+                            print('content loss: %.3f,  weighted content loss: %.3f' % (_content_loss, content_weight * _content_loss))
+                            print('style loss  : %.3f,  weighted style loss: %.3f' % (_style_loss, style_weight * _style_loss))
+                            print('lambda1 loss  : %.3f,  weighted lambda1 loss: %.3f' % (_loss_lambda1, lambda1 * _loss_lambda1))
                             print('lambda2 loss  : %.3f,  weighted lambda2 loss: %.3f\n' % (_loss_lambda2, lambda2 * _loss_lambda2))
         except Exception as ex:
             saver.save(sess, model_save_path, global_step=step)
