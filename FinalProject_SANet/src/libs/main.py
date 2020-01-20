@@ -4,17 +4,21 @@ Train or make inference the style transfer network
 
 from __future__ import print_function
 
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+# import tensorflow as tf
+
 import tensorflow as tf
 from train import train
 from infer import stylize
 from utils import list_images
 
 
-IS_TRAINING = False
+IS_TRAINING = True
 
 # for training
-TRAINING_CONTENT_DIR = '../../_input/content'
-TRAINING_STYLE_DIR = '../../_input/style'
+TRAINING_CONTENT_DIR = '../../_inference/content'
+TRAINING_STYLE_DIR = '../../_inference/style'
 ENCODER_WEIGHTS_PATH = '../../vgg19_normalised.npz'
 LOGGING_PERIOD = 20
 
@@ -22,7 +26,7 @@ STYLE_WEIGHTS = [3.0]
 CONTENT_WEIGHTS = [1.0]
 LAMBDA1 = [1.0]
 LAMBDA2 = [50.0]
-MODEL_SAVE_PATHS = ['../../models/style_weight_2e0.ckpt']
+MODEL_SAVE_PATHS = ['../../models/stylize_net.ckpt']
 
 # for inferring (stylize)
 INFERRING_CONTENT_DIR = '../../_inference/content'
