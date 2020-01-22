@@ -14,6 +14,18 @@ Arbitrary style transfer aims to synthesize a content image with the style of an
 </p>
 System overview. Picture comes from original paper. 
 
+Some Results:
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result1.png)
+
+Content–style trade-off during runtime:
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result3.png)
+
+Style interpolaton:
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result2.png)
+
+Color preserving:
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result4.png)
+
 ## Prerequisites
 - [Microsoft COCO dataset](http://msvocds.blob.core.windows.net/coco2014/train2014.zip)
 - [WikiArt dataset](https://www.kaggle.com/c/painter-by-numbers)
