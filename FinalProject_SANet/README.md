@@ -9,22 +9,23 @@ Kwang Hee Lee
 
 Arbitrary style transfer aims to synthesize a content image with the style of an image to create a third image that has never been seen before. Recent arbitrary style transfer algorithms find it challenging to balance the content structure and the style patterns. Moreover, simultaneously maintaining the global and local style patterns is difficult due to the patch-based mechanism. In this paper, authors introduce a novel style-attentional network (SANet) that efficiently and flexibly integrates the local style patterns according to the semantic spatial distribution of the content image. A new identity loss function and multi-level feature embeddings enable SANet and decoder to preserve the content structure as much as possible while enriching the style patterns. Experimental results demonstrate that algorithm synthesizes stylized images in real-time that are higher in quality than those produced by the state-of-the-art algorithms. The SANet is trained using MS-COCO 2014 dataset (about 12.6GB) and WikiArt dataset (about 36GB).
 
+System overview. Picture comes from original paper.
+
 <p align='center'>
   <img src='_asset/architecture.png'>
-</p>
-System overview. Picture comes from original paper. 
+</p> 
 
 Some Results:
-![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result1.png)
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/blob/master/FinalProject_SANet/PyTorch/results/result1.png)
 
 Content–style trade-off during runtime:
-![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result3.png)
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/blob/master/FinalProject_SANet/PyTorch/results/result3.png)
 
 Style interpolaton:
-![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result2.png)
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/blob/master/FinalProject_SANet/PyTorch/results/result2.png)
 
 Color preserving:
-![Alt text](https://github.com/lev1khachatryan/ASDS_CV/tree/master/FinalProject_SANet/PyTorch/results/result4.png)
+![Alt text](https://github.com/lev1khachatryan/ASDS_CV/blob/master/FinalProject_SANet/PyTorch/results/result4.png)
 
 ## Prerequisites
 - [Microsoft COCO dataset](http://msvocds.blob.core.windows.net/coco2014/train2014.zip)
