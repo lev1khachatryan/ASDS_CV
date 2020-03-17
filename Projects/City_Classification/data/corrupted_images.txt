@@ -1,0 +1,2 @@
+C:/_Files/MyProjects/CityClassification/data/1\33_london.jpg
+C:/_Files/MyProjects/CityClassification/data/test/242_yerevan.jpg
