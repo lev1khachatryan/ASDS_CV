@@ -1,0 +1,7 @@
+numpy==1.16.2
+pandas==0.24.2
+pillow==5.4.1
+scipy==1.2.1
+scikit-image==0.14.2
+configparser==4.0.2
+tensorflow==1.14.0
