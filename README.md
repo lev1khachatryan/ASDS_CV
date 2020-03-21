@@ -25,3 +25,8 @@
     2.4 Segmentation Revisited: Instance Segmentation.
 
     2.5 Generative Models.
+
+
+## Bibliography
+
+https://drive.google.com/open?id=1QchjDgcB4FNF8FQp8DLJeZnHWUZWLGYL
