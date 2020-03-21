@@ -1,6 +1,6 @@
 # TensorBoard in PyTorch
 
-In this tutorial, we implement a MNIST classifier using a simple neural network and visualize the training process using [TensorBoard](https://www.tensorflow.org/get_started/summaries_and_tensorboard). In training phase, we plot the loss and accuracy functions through `scalar_summary` and visualize the training images through `image_summary`. In addition, we visualize the weight and gradient values of the parameters of the neural network using `histogram_summary`. PyTorch code for handling these summary functions can be found [here](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/04-utils/tensorboard/main.py#L81-L97).
+In this tutorial, we implement a MNIST classifier using a simple neural network and visualize the training process using [TensorBoard](https://www.tensorflow.org/get_started/summaries_and_tensorboard). In training phase, we plot the loss and accuracy functions through `scalar_summary` and visualize the training images through `image_summary`. In addition, we visualize the weight and gradient values of the parameters of the neural network using `histogram_summary`. PyTorch code for handling these summary functions can be found [here](https://github.com/lev1khachatryan/Computer_Vision/blob/master/Tutorials/PyTorch/tutorials/04-utils/tensorboard/main.py#L81-L97).
 
 ![alt text](gif/tensorboard.gif)
 
