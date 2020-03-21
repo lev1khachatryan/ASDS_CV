@@ -33,14 +33,6 @@ In the tutorial, most of the models were implemented with less than 30 lines of 
 
 
 
-<br/>
-
-## Getting Started
-```bash
-$ git clone https://github.com/yunjey/pytorch-tutorial.git
-$ cd pytorch-tutorial/tutorials/PATH_TO_PROJECT
-$ python main.py
-```
 
 <br/>
 
@@ -48,10 +40,3 @@ $ python main.py
 * [Python 2.7 or 3.5+](https://www.continuum.io/downloads)
 * [PyTorch 0.4.0+](http://pytorch.org/)
 
-
-
-<br/>
-
-
-## Author
-Yunjey Choi/ [@yunjey](https://github.com/yunjey)
