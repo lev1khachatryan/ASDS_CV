@@ -56,12 +56,6 @@ It is suitable for beginners who want to find clear and concise examples about T
 - **Train a Neural Network on multi-GPU** ([notebook](https://github.com/lev1khachatryan/Computer_Vision/tree/master/Tutorials/TensorFlow_V1/notebooks/6_MultiGPU/multigpu_cnn.ipynb)) ([code](https://github.com/lev1khachatryan/Computer_Vision/tree/master/Tutorials/TensorFlow_V1/examples/6_MultiGPU/multigpu_cnn.py)). A clear and simple TensorFlow implementation to train a convolutional neural network on multiple GPUs.
 
 
-## Dataset
-Some examples require MNIST dataset for training and testing. Don't worry, this dataset will automatically be downloaded when running examples.
-MNIST is a database of handwritten digits, for a quick description of that dataset, you can check [this notebook](https://github.com/lev1khachatryan/Computer_Vision/tree/master/Tutorials/TensorFlow_V1/notebooks/0_Prerequisite/mnist_dataset_intro.ipynb).
-
-Official Website: [http://yann.lecun.com/exdb/mnist/](http://yann.lecun.com/exdb/mnist/).
-
 ## More Examples
 The following examples are coming from [TFLearn](https://github.com/tflearn/tflearn), a library that provides a simplified interface for TensorFlow. You can have a look, there are many [examples](https://github.com/tflearn/tflearn/tree/master/examples) and [pre-built operations and layers](http://tflearn.org/doc_index/#api).
 
